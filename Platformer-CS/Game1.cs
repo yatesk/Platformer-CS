@@ -12,10 +12,22 @@ namespace Platformer_CS
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Texture2D background;
+        Texture2D player;
+        Vector2 position;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 800;
+            graphics.PreferredBackBufferWidth = 1200;
             Content.RootDirectory = "Content";
+            this.Window.Title = "Platformer CS";
+
+
+            
+
+            position = new Vector2(0, 0);
         }
 
         /// <summary>
@@ -26,7 +38,6 @@ namespace Platformer_CS
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -39,6 +50,14 @@ namespace Platformer_CS
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+
+
+
+            background = this.Content.Load<Texture2D>("level2");
+
+            player = this.Content.Load<Texture2D>("player1");
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -62,7 +81,9 @@ namespace Platformer_CS
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            position.X += 1;
+            if (position.X > this.GraphicsDevice.Viewport.Width)
+                position.X = 0;
 
             base.Update(gameTime);
         }
@@ -73,9 +94,13 @@ namespace Platformer_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            spriteBatch.Draw(background, Vector2.Zero);
+            spriteBatch.Draw(player, position);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
