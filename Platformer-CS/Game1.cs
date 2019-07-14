@@ -4,30 +4,26 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Platformer_CS
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class Game1 : Game
     {
+        int screen_width = 1200;
+        int screen_height = 800;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Texture2D background;
-        Texture2D player;
-        Vector2 position;
+        Level level;
+
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferHeight = 800;
-            graphics.PreferredBackBufferWidth = 1200;
+            graphics.PreferredBackBufferHeight = screen_height;
+            graphics.PreferredBackBufferWidth = screen_width;
             Content.RootDirectory = "Content";
             this.Window.Title = "Platformer CS";
 
-
-            
-
-            position = new Vector2(0, 0);
+            level = new Level(this.Content);
         }
 
         /// <summary>
@@ -38,7 +34,6 @@ namespace Platformer_CS
         /// </summary>
         protected override void Initialize()
         {
-
             base.Initialize();
         }
 
@@ -52,14 +47,9 @@ namespace Platformer_CS
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
+            level.background_image = this.Content.Load<Texture2D>("level2");
+            level.player.image = this.Content.Load<Texture2D>("player2");
 
-
-            background = this.Content.Load<Texture2D>("level2");
-
-            player = this.Content.Load<Texture2D>("player1");
-
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -78,12 +68,27 @@ namespace Platformer_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            KeyboardState state = Keyboard.GetState();
+
+            if (state.IsKeyDown(Keys.Escape))
                 Exit();
 
-            position.X += 1;
-            if (position.X > this.GraphicsDevice.Viewport.Width)
-                position.X = 0;
+
+            if (state.IsKeyDown(Keys.Left) || state.IsKeyDown(Keys.A))
+                level.player.Left();
+            if (state.IsKeyDown(Keys.Right) || state.IsKeyDown(Keys.D))
+                level.player.Right();
+            if (state.IsKeyDown(Keys.Down) || state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Space))
+                level.player.Jump();
+
+
+            if (state.IsKeyUp(Keys.Left) && state.IsKeyUp(Keys.A) && level.player.velocity.X < 0)
+                level.player.Stop();
+            if (state.IsKeyUp(Keys.Right) && state.IsKeyUp(Keys.D) && level.player.velocity.X > 0)
+                level.player.Stop();
+
+
+            level.Update();
 
             base.Update(gameTime);
         }
@@ -97,8 +102,10 @@ namespace Platformer_CS
             GraphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(background, Vector2.Zero);
-            spriteBatch.Draw(player, position);
+
+
+            level.Draw(spriteBatch);
+            
 
             spriteBatch.End();
 
