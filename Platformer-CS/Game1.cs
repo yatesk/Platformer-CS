@@ -23,7 +23,7 @@ namespace Platformer_CS
             Content.RootDirectory = "Content";
             this.Window.Title = "Platformer CS";
 
-            level = new Level(this.Content);
+            
         }
 
         /// <summary>
@@ -35,6 +35,8 @@ namespace Platformer_CS
         protected override void Initialize()
         {
             base.Initialize();
+
+            
         }
 
         /// <summary>
@@ -43,12 +45,14 @@ namespace Platformer_CS
         /// </summary>
         protected override void LoadContent()
         {
+            level = new Level(Content);
+
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
-            level.background_image = this.Content.Load<Texture2D>("level2");
-            level.player.image = this.Content.Load<Texture2D>("player2");
+            //level.background_image = this.Content.Load<Texture2D>("level2");
+            //level.player.image = this.Content.Load<Texture2D>("player2");
 
         }
 

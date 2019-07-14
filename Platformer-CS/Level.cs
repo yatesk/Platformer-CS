@@ -23,6 +23,8 @@ namespace Platformer_CS
 
         public List<Tile> tiles = new List<Tile>();
 
+        public Dictionary<char, Texture2D> tileTextures = new Dictionary<char, Texture2D>();
+
         ContentManager content;
 
 
@@ -42,6 +44,7 @@ namespace Platformer_CS
             // only move camera if play is in middle of screen and going right
             if (player.velocity.X > 0 && player.position.X >= screen_width / 2)
             {
+                MoveTiles();
                 background_xy1.X -= player.velocity.X;
                 background_xy2.X -= player.velocity.X;
 
@@ -52,13 +55,20 @@ namespace Platformer_CS
                     background_xy2.X = screen_width;
             }
             else
+            {
                 player.position.X += player.velocity.X;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(background_image, background_xy1);
             spriteBatch.Draw(background_image, background_xy2);
+
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                spriteBatch.Draw(tileTextures[tiles[i].name], tiles[i].position);
+            }
 
             player.Draw(spriteBatch);
         }
@@ -80,14 +90,41 @@ namespace Platformer_CS
                 for (int j = 0; j < level[i].Length; j++)
                 {
                     if (level[i][j] == 'B')
-                        tiles.Add(new Tile(64 * j, 64 * i, 64, 64, "brick.png"));
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'B'));
+
+                    if (level[i][j] == 'F')
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'F'));
+
+                    if (level[i][j] == 'Q')
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'Q'));
+
+                    if (level[i][j] == 'P')
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 128, 64, 'P'));
+
+                    if (level[i][j] == 'S')
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'S'));
                 }
         }
 
         public void LoadContent()
         {
-            //background_image = new this.content.Load<Texture2D>("level2");
-            //player.image = content.Load<Texture2D>("player2");
+            background_image = content.Load<Texture2D>("level2");
+            player.image = content.Load<Texture2D>("player2");
+
+            tileTextures.Add('B', content.Load<Texture2D>("brick"));
+            tileTextures.Add('F', content.Load<Texture2D>("floor1"));
+            tileTextures.Add('Q', content.Load<Texture2D>("question"));
+            tileTextures.Add('P', content.Load<Texture2D>("pipe"));
+            tileTextures.Add('S', content.Load<Texture2D>("stair"));
+        }
+
+
+        public void MoveTiles()
+        {
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                tiles[i].position.X -= player.velocity.X;
+            }
         }
     }
 }

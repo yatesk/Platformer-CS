@@ -9,23 +9,19 @@ namespace Platformer_CS
     public class Tile
     {
         public Texture2D texture;
-        public string name;
+        public char name;
 
         public int width;
         public int height;
-        public int x;
-        public int y;
+        public Vector2 position;
 
 
-        public Tile(int x, int y, int width, int height, string name)
+        public Tile(Vector2 position, int width, int height, char name)
         {
-            this.x = x;
-            this.y = y;
+            this.position = position;
             this.width = width;
             this.height = height;
             this.name = name;
-              
         }
-            
     }
 }
