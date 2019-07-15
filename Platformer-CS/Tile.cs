@@ -15,6 +15,8 @@ namespace Platformer_CS
         public int height;
         public Vector2 position;
 
+        public Rectangle boundingBox;
+
 
         public Tile(Vector2 position, int width, int height, char name)
         {
@@ -22,6 +24,8 @@ namespace Platformer_CS
             this.width = width;
             this.height = height;
             this.name = name;
+
+            this.boundingBox = new Rectangle((int)position.X, (int)position.Y, width, height);
         }
     }
 }

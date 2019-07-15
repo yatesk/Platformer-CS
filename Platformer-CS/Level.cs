@@ -16,7 +16,7 @@ namespace Platformer_CS
         public Vector2 background_xy2;  // max screen width
 
 
-        public Player player = new Player(500, 500);
+        public Player player = new Player(400, 400);
 
         public int screen_width = 1200;
         public int screen_height = 800;
@@ -34,7 +34,7 @@ namespace Platformer_CS
             background_xy2 = new Vector2(1200, 0);
 
             content = Content;
-     
+            
             LoadContent();
             LoadLevel();
         }
@@ -56,8 +56,28 @@ namespace Platformer_CS
             }
             else
             {
-                player.position.X += player.velocity.X;
+                player.position.X += (int)player.velocity.X;
+                player.boundingBox.X += (int)player.velocity.X;
             }
+
+            if (player.position.X < 0)
+            {
+                player.position.X = 0;
+                player.boundingBox.X = 0;
+            }
+
+
+            for (int i = 0; i < tiles.Count;i++)
+            {
+                if (player.boundingBox.Intersects(tiles[i].boundingBox))
+                {
+                    if (player.velocity.X > 0)
+                        player.position.X = tiles[i].position.X - player.boundingBox.Width;
+                    else if (player.velocity.X < 0)
+                        player.position.X = tiles[i].position.X + tiles[i].width;
+                }
+            }
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -77,7 +97,7 @@ namespace Platformer_CS
         {
             String line;
             List<char[]> level = new List<char[]>();
-            FileStream fsSource = new FileStream("level1.txt", FileMode.Open, FileAccess.Read);
+            FileStream fsSource = new FileStream("level0.txt", FileMode.Open, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
                 while ((line = sr.ReadLine()) != null)
@@ -103,6 +123,16 @@ namespace Platformer_CS
 
                     if (level[i][j] == 'S')
                         tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'S'));
+
+                    if (level[i][j] == 'Z')
+                    {
+                        player.position.X = 64 * j;
+                        player.position.Y = 64 * i;
+
+                        player.boundingBox.X = 64 * j;
+                        player.boundingBox.Y = 64 * i;
+                    }
+
                 }
         }
 
@@ -124,6 +154,7 @@ namespace Platformer_CS
             for (int i = 0; i < tiles.Count; i++)
             {
                 tiles[i].position.X -= player.velocity.X;
+                tiles[i].boundingBox.X = (int)tiles[i].position.X;
             }
         }
     }

@@ -10,11 +10,15 @@ namespace Platformer_CS
         public Vector2 velocity;
         public Texture2D image;
 
+        public Rectangle boundingBox;
+
         public Player(int x, int y)
         {
             position = new Vector2(x, y);
             velocity = new Vector2(0, 0);
-        }
+
+            boundingBox = new Rectangle(x, y, 32, 64);
+    }
 
         public void Left()
         {
