@@ -5,6 +5,7 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
+using Platformer2D;
 
 namespace Platformer_CS
 {
@@ -15,8 +16,7 @@ namespace Platformer_CS
         public Vector2 background_xy1;
         public Vector2 background_xy2;  // max screen width
 
-
-        public Player player = new Player(400, 400);
+        public Player player = new Player(400, 400, 32, 64);
 
         public int screen_width = 1200;
         public int screen_height = 800;
@@ -31,16 +31,43 @@ namespace Platformer_CS
         public Level(ContentManager Content)
         {
             background_xy1 = new Vector2(0, 0);
-            background_xy2 = new Vector2(1200, 0);
+            background_xy2 = new Vector2(screen_width, 0);
 
             content = Content;
-            
+
             LoadContent();
             LoadLevel();
         }
 
         public void Update()
         {
+            if (player.position.X < 0)
+                player.position.X = 0;
+
+            Rectangle playerBoundingBox = new Rectangle((int)player.position.X + (int)player.velocity.X, (int)(player.position.Y + player.velocity.Y), player.width, player.height);
+
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                Rectangle tileBoundingBox = new Rectangle((int)tiles[i].position.X, (int)tiles[i].position.Y, tiles[i].width, tiles[i].height);
+
+                Vector2 depth = RectangleExtensions.GetIntersectionDepth(playerBoundingBox, tileBoundingBox);
+
+                if (depth != Vector2.Zero)
+                {
+                    if (player.velocity.Y == 0)
+                    {
+                        player.position.X += depth.X;
+                        break;
+                    }
+
+                    if (player.velocity.X == 0)
+                    {
+                        player.position.Y += depth.Y;
+                        break;
+                    }
+                }
+            }
+
             // only move camera if play is in middle of screen and going right
             if (player.velocity.X > 0 && player.position.X >= screen_width / 2)
             {
@@ -56,28 +83,9 @@ namespace Platformer_CS
             }
             else
             {
-                player.position.X += (int)player.velocity.X;
-                player.boundingBox.X += (int)player.velocity.X;
+                player.position.X += player.velocity.X;
             }
-
-            if (player.position.X < 0)
-            {
-                player.position.X = 0;
-                player.boundingBox.X = 0;
-            }
-
-
-            for (int i = 0; i < tiles.Count;i++)
-            {
-                if (player.boundingBox.Intersects(tiles[i].boundingBox))
-                {
-                    if (player.velocity.X > 0)
-                        player.position.X = tiles[i].position.X - player.boundingBox.Width;
-                    else if (player.velocity.X < 0)
-                        player.position.X = tiles[i].position.X + tiles[i].width;
-                }
-            }
-
+            player.position.Y += player.velocity.Y;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -86,9 +94,7 @@ namespace Platformer_CS
             spriteBatch.Draw(background_image, background_xy2);
 
             for (int i = 0; i < tiles.Count; i++)
-            {
                 spriteBatch.Draw(tileTextures[tiles[i].name], tiles[i].position);
-            }
 
             player.Draw(spriteBatch);
         }
@@ -97,13 +103,11 @@ namespace Platformer_CS
         {
             String line;
             List<char[]> level = new List<char[]>();
-            FileStream fsSource = new FileStream("level0.txt", FileMode.Open, FileAccess.Read);
+            FileStream fsSource = new FileStream("level1.txt", FileMode.Open, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
                 while ((line = sr.ReadLine()) != null)
-                {
                     level.Add(line.ToCharArray());
-                }
             }
 
             for (int i = 0; i < level.Count; i++)
@@ -128,9 +132,6 @@ namespace Platformer_CS
                     {
                         player.position.X = 64 * j;
                         player.position.Y = 64 * i;
-
-                        player.boundingBox.X = 64 * j;
-                        player.boundingBox.Y = 64 * i;
                     }
 
                 }
@@ -148,14 +149,10 @@ namespace Platformer_CS
             tileTextures.Add('S', content.Load<Texture2D>("stair"));
         }
 
-
         public void MoveTiles()
         {
             for (int i = 0; i < tiles.Count; i++)
-            {
                 tiles[i].position.X -= player.velocity.X;
-                tiles[i].boundingBox.X = (int)tiles[i].position.X;
-            }
         }
     }
 }

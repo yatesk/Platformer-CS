@@ -83,7 +83,7 @@ namespace Platformer_CS
             if (state.IsKeyDown(Keys.Right) || state.IsKeyDown(Keys.D))
                 level.player.Right();
             if (state.IsKeyDown(Keys.Down) || state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Space))
-                level.player.Jump();
+                level.player.Jump(level);
 
 
             if (state.IsKeyUp(Keys.Left) && state.IsKeyUp(Keys.A) && level.player.velocity.X < 0)
