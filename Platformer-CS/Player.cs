@@ -12,6 +12,8 @@ namespace Platformer_CS
         public int width;
         public int height;
 
+        public bool onPlatform = true;
+
 
         public Player(int x, int y, int width, int height)
         {
@@ -37,7 +39,13 @@ namespace Platformer_CS
             velocity.X = 0;
         }
 
-        public void Jump(Level level)
+        public void Jump()
+        {
+            if (onPlatform)
+                velocity.Y = -8;  
+        }
+
+        public bool isOnPlatform(Level level)
         {
             // check to see if player is on the ground
             Rectangle playerBoundingBox = new Rectangle((int)position.X, (int)position.Y + 1, width, height);
@@ -46,20 +54,18 @@ namespace Platformer_CS
             {
                 Rectangle tileBoundingBox = new Rectangle((int)level.tiles[i].position.X, (int)level.tiles[i].position.Y, level.tiles[i].width, level.tiles[i].height);
 
-                if (playerBoundingBox.Intersects(tileBoundingBox))
-                {
-                    velocity.Y = -8;
-                    break;
-                }
+                Rectangle intersectArea = Rectangle.Intersect(playerBoundingBox, tileBoundingBox);
+
+                if (intersectArea.Height == 1)
+                    return true;
             }
+            return false;
         }
 
         public void Gravity()
         {
-            if (velocity.Y == 0)
-                velocity.Y = 1;
-            else
-                velocity.Y += .25f;
+            if (!onPlatform && velocity.Y <= 8)
+                velocity.Y += .25f;      
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+
 namespace Platformer_CS
 {
     public class Game1 : Game
@@ -14,16 +15,13 @@ namespace Platformer_CS
 
         Level level;
 
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferHeight = screen_height;
             graphics.PreferredBackBufferWidth = screen_width;
             Content.RootDirectory = "Content";
-            this.Window.Title = "Platformer CS";
-
-            
+            this.Window.Title = "Platformer CS"; 
         }
 
         /// <summary>
@@ -34,9 +32,7 @@ namespace Platformer_CS
         /// </summary>
         protected override void Initialize()
         {
-            base.Initialize();
-
-            
+            base.Initialize();   
         }
 
         /// <summary>
@@ -49,11 +45,6 @@ namespace Platformer_CS
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
-            //level.background_image = this.Content.Load<Texture2D>("level2");
-            //level.player.image = this.Content.Load<Texture2D>("player2");
-
         }
 
         /// <summary>
@@ -77,20 +68,18 @@ namespace Platformer_CS
             if (state.IsKeyDown(Keys.Escape))
                 Exit();
 
-
             if (state.IsKeyDown(Keys.Left) || state.IsKeyDown(Keys.A))
                 level.player.Left();
             if (state.IsKeyDown(Keys.Right) || state.IsKeyDown(Keys.D))
                 level.player.Right();
             if (state.IsKeyDown(Keys.Down) || state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Space))
-                level.player.Jump(level);
+                level.player.Jump();
 
 
             if (state.IsKeyUp(Keys.Left) && state.IsKeyUp(Keys.A) && level.player.velocity.X < 0)
                 level.player.Stop();
             if (state.IsKeyUp(Keys.Right) && state.IsKeyUp(Keys.D) && level.player.velocity.X > 0)
                 level.player.Stop();
-
 
             level.Update();
 
@@ -107,10 +96,8 @@ namespace Platformer_CS
 
             spriteBatch.Begin();
 
-
             level.Draw(spriteBatch);
             
-
             spriteBatch.End();
 
             base.Draw(gameTime);

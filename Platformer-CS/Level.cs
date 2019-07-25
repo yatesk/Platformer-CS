@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System.IO;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
-using Platformer2D;
+
 
 namespace Platformer_CS
 {
@@ -41,30 +40,47 @@ namespace Platformer_CS
 
         public void Update()
         {
+            player.onPlatform = player.isOnPlatform(this);
+
+            player.Gravity();
+
             if (player.position.X < 0)
                 player.position.X = 0;
 
-            Rectangle playerBoundingBox = new Rectangle((int)player.position.X + (int)player.velocity.X, (int)(player.position.Y + player.velocity.Y), player.width, player.height);
+            Rectangle playerBoundingBox = new Rectangle((int)(player.position.X + player.velocity.X), (int)(player.position.Y + player.velocity.Y), player.width, player.height);
 
             for (int i = 0; i < tiles.Count; i++)
             {
                 Rectangle tileBoundingBox = new Rectangle((int)tiles[i].position.X, (int)tiles[i].position.Y, tiles[i].width, tiles[i].height);
 
-                Vector2 depth = RectangleExtensions.GetIntersectionDepth(playerBoundingBox, tileBoundingBox);
+                Rectangle intersectArea = Rectangle.Intersect(playerBoundingBox, tileBoundingBox);
 
-                if (depth != Vector2.Zero)
+                //System.Diagnostics.Debug.WriteLine(intersectArea);
+
+                if (intersectArea.X > 0 || intersectArea.Y > 0)
                 {
-                    if (player.velocity.Y == 0)
+                    if (player.velocity.X > 0)
                     {
-                        player.position.X += depth.X;
-                        break;
+                        player.position.X -= intersectArea.Width;
+                    }
+                    else
+                    {
+                        player.position.X += intersectArea.Width;
                     }
 
-                    if (player.velocity.X == 0)
+                    player.velocity.X = 0;
+
+
+                    if (player.velocity.Y > 0)
                     {
-                        player.position.Y += depth.Y;
-                        break;
+                        player.position.X -= intersectArea.Height;
                     }
+                    else
+                    {
+                        player.position.X += intersectArea.Height;
+                    }
+
+                    player.velocity.Y = 0;
                 }
             }
 
@@ -133,7 +149,6 @@ namespace Platformer_CS
                         player.position.X = 64 * j;
                         player.position.Y = 64 * i;
                     }
-
                 }
         }
 
