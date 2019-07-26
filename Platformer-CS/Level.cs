@@ -47,40 +47,50 @@ namespace Platformer_CS
             if (player.position.X < 0)
                 player.position.X = 0;
 
-            Rectangle playerBoundingBox = new Rectangle((int)(player.position.X + player.velocity.X), (int)(player.position.Y + player.velocity.Y), player.width, player.height);
+            Rectangle playerBoundingBox = new Rectangle((int)(player.position.X + player.velocity.X), (int)(player.position.Y), player.width, player.height);
 
             for (int i = 0; i < tiles.Count; i++)
             {
                 Rectangle tileBoundingBox = new Rectangle((int)tiles[i].position.X, (int)tiles[i].position.Y, tiles[i].width, tiles[i].height);
 
-                Rectangle intersectArea = Rectangle.Intersect(playerBoundingBox, tileBoundingBox);
-
-                //System.Diagnostics.Debug.WriteLine(intersectArea);
-
-                if (intersectArea.X > 0 || intersectArea.Y > 0)
+                if (playerBoundingBox.Intersects(tileBoundingBox))
                 {
                     if (player.velocity.X > 0)
                     {
-                        player.position.X -= intersectArea.Width;
+                        player.position.X = (int)tiles[i].position.X - player.width;
+                        player.velocity.X = 0;
+                        break;
                     }
-                    else
+                    else if (player.velocity.X < 0)
                     {
-                        player.position.X += intersectArea.Width;
+                        player.position.X = (int)tiles[i].position.X + tiles[i].width;
+                        player.velocity.X = 0;
+                        break;
                     }
+                }
+            }
 
-                    player.velocity.X = 0;
 
+            playerBoundingBox = new Rectangle((int)(player.position.X), (int)(player.position.Y + player.velocity.Y), player.width, player.height);
 
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                Rectangle tileBoundingBox = new Rectangle((int)tiles[i].position.X, (int)tiles[i].position.Y, tiles[i].width, tiles[i].height);
+
+                if (playerBoundingBox.Intersects(tileBoundingBox))
+                {
                     if (player.velocity.Y > 0)
                     {
-                        player.position.X -= intersectArea.Height;
+                        player.position.Y = (int)tiles[i].position.Y - player.height;
+                        player.velocity.Y = 0;
+                        break;
                     }
-                    else
+                    else if (player.velocity.Y < 0)
                     {
-                        player.position.X += intersectArea.Height;
+                        player.position.Y = (int)tiles[i].position.Y + tiles[i].height;
+                        player.velocity.Y = 0;
+                        break;
                     }
-
-                    player.velocity.Y = 0;
                 }
             }
 
