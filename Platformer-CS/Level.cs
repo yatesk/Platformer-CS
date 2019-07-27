@@ -22,7 +22,7 @@ namespace Platformer_CS
 
         public List<Tile> tiles = new List<Tile>();
 
-        public Dictionary<char, Texture2D> tileTextures = new Dictionary<char, Texture2D>();
+        public Dictionary<Tile.TileType, Texture2D> tileTextures = new Dictionary<Tile.TileType, Texture2D>();
 
         ContentManager content;
 
@@ -82,12 +82,20 @@ namespace Platformer_CS
                     if (player.velocity.Y > 0)
                     {
                         player.position.Y = (int)tiles[i].position.Y - player.height;
+                        
                         player.velocity.Y = 0;
                         break;
                     }
                     else if (player.velocity.Y < 0)
                     {
                         player.position.Y = (int)tiles[i].position.Y + tiles[i].height;
+
+                        if (tiles[i].type == Tile.TileType.Brick && player.velocity.Y < 0)
+                            tiles.Remove(tiles[i]);
+
+                        else if (tiles[i].type == Tile.TileType.Question1 && player.velocity.Y < 0)
+                            tiles[i].type = Tile.TileType.Question2;
+
                         player.velocity.Y = 0;
                         break;
                     }
@@ -120,7 +128,7 @@ namespace Platformer_CS
             spriteBatch.Draw(background_image, background_xy2);
 
             for (int i = 0; i < tiles.Count; i++)
-                spriteBatch.Draw(tileTextures[tiles[i].name], tiles[i].position);
+                spriteBatch.Draw(tileTextures[tiles[i].type], tiles[i].position);
 
             player.Draw(spriteBatch);
         }
@@ -140,19 +148,19 @@ namespace Platformer_CS
                 for (int j = 0; j < level[i].Length; j++)
                 {
                     if (level[i][j] == 'B')
-                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'B'));
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, Tile.TileType.Brick));
 
                     if (level[i][j] == 'F')
-                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'F'));
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, Tile.TileType.Floor1));
 
                     if (level[i][j] == 'Q')
-                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'Q'));
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, Tile.TileType.Question1));
 
                     if (level[i][j] == 'P')
-                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 128, 64, 'P'));
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 128, 64, Tile.TileType.Pipe));
 
                     if (level[i][j] == 'S')
-                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, 'S'));
+                        tiles.Add(new Tile(new Vector2(64 * j, 64 * i), 64, 64, Tile.TileType.Stair));
 
                     if (level[i][j] == 'Z')
                     {
@@ -165,13 +173,14 @@ namespace Platformer_CS
         public void LoadContent()
         {
             background_image = content.Load<Texture2D>("level2");
-            player.image = content.Load<Texture2D>("player2");
+            player.image = content.Load<Texture2D>("player3");
 
-            tileTextures.Add('B', content.Load<Texture2D>("brick"));
-            tileTextures.Add('F', content.Load<Texture2D>("floor1"));
-            tileTextures.Add('Q', content.Load<Texture2D>("question"));
-            tileTextures.Add('P', content.Load<Texture2D>("pipe"));
-            tileTextures.Add('S', content.Load<Texture2D>("stair"));
+            tileTextures.Add(Tile.TileType.Brick, content.Load<Texture2D>("brick"));
+            tileTextures.Add(Tile.TileType.Floor1, content.Load<Texture2D>("floor1"));
+            tileTextures.Add(Tile.TileType.Question1, content.Load<Texture2D>("question1"));
+            tileTextures.Add(Tile.TileType.Question2, content.Load<Texture2D>("question2"));
+            tileTextures.Add(Tile.TileType.Pipe, content.Load<Texture2D>("pipe"));
+            tileTextures.Add(Tile.TileType.Stair, content.Load<Texture2D>("stair"));
         }
 
         public void MoveTiles()
