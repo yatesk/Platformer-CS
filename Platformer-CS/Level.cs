@@ -90,10 +90,12 @@ namespace Platformer_CS
                     {
                         player.position.Y = (int)tiles[i].position.Y + tiles[i].height;
 
-                        if (tiles[i].type == Tile.TileType.Brick && player.velocity.Y < 0)
+                        if (tiles[i].type == Tile.TileType.Brick)
+                        {
                             tiles.Remove(tiles[i]);
+                        }
 
-                        else if (tiles[i].type == Tile.TileType.Question1 && player.velocity.Y < 0)
+                        else if (tiles[i].type == Tile.TileType.Question1)
                             tiles[i].type = Tile.TileType.Question2;
 
                         player.velocity.Y = 0;
@@ -119,7 +121,19 @@ namespace Platformer_CS
             {
                 player.position.X += player.velocity.X;
             }
+
+            System.Diagnostics.Debug.WriteLine(player.velocity.Y);
+
             player.position.Y += player.velocity.Y;
+
+            // If player dies, restart level.
+            if (player.position.Y > screen_height)
+            {
+                background_xy1 = new Vector2(0, 0);
+                background_xy2 = new Vector2(screen_width, 0);
+                tiles.Clear();
+                LoadLevel();
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
