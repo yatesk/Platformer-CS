@@ -97,7 +97,7 @@
 /processorParam:TextureFormat=Color
 /build:player3.png
 
-#begin question1.png
+#begin player4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -107,7 +107,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:question1.png
+/build:player4.png
 
 #begin question1.png
 /importer:TextureImporter

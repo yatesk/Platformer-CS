@@ -15,7 +15,11 @@ namespace Platformer_CS
         public Vector2 background_xy1;
         public Vector2 background_xy2;  // max screen width
 
-        public Player player = new Player(400, 400, 32, 64);
+        // Temporary values so collisions work better.
+        public const int PLAYER_HEIGHT = 62;
+        public const int PLAYER_WIDTH = 31;
+
+        public Player player = new Player(400, 400, PLAYER_WIDTH, PLAYER_HEIGHT);
 
         public int screen_width = 1200;
         public int screen_height = 800;
@@ -129,11 +133,16 @@ namespace Platformer_CS
             // If player dies, restart level.
             if (player.position.Y > screen_height)
             {
-                background_xy1 = new Vector2(0, 0);
-                background_xy2 = new Vector2(screen_width, 0);
-                tiles.Clear();
-                LoadLevel();
+                RestartLevel();
             }
+        }
+
+        public void RestartLevel()
+        {
+            background_xy1 = new Vector2(0, 0);
+            background_xy2 = new Vector2(screen_width, 0);
+            tiles.Clear();
+            LoadLevel();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -187,7 +196,7 @@ namespace Platformer_CS
         public void LoadContent()
         {
             background_image = content.Load<Texture2D>("level2");
-            player.image = content.Load<Texture2D>("player3");
+            player.image = content.Load<Texture2D>("player4");
 
             tileTextures.Add(Tile.TileType.Brick, content.Load<Texture2D>("brick"));
             tileTextures.Add(Tile.TileType.Floor1, content.Load<Texture2D>("floor1"));
