@@ -24,11 +24,14 @@ namespace Platformer_CS
         public int screen_width = 1200;
         public int screen_height = 800;
 
+        public float timer = 0f;
+
         public List<Tile> tiles = new List<Tile>();
 
         public Dictionary<Tile.TileType, Texture2D> tileTextures = new Dictionary<Tile.TileType, Texture2D>();
 
         ContentManager content;
+        SpriteFont timerFont;
 
 
         public Level(ContentManager Content)
@@ -42,8 +45,11 @@ namespace Platformer_CS
             LoadLevel();
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
+            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
             player.onPlatform = player.isOnPlatform(this);
 
             player.Gravity();
@@ -126,7 +132,7 @@ namespace Platformer_CS
                 player.position.X += player.velocity.X;
             }
 
-            System.Diagnostics.Debug.WriteLine(player.velocity.Y);
+            System.Diagnostics.Debug.WriteLine(timer);
 
             player.position.Y += player.velocity.Y;
 
@@ -142,6 +148,8 @@ namespace Platformer_CS
             background_xy1 = new Vector2(0, 0);
             background_xy2 = new Vector2(screen_width, 0);
             tiles.Clear();
+            timer = 0f;
+
             LoadLevel();
         }
 
@@ -154,6 +162,8 @@ namespace Platformer_CS
                 spriteBatch.Draw(tileTextures[tiles[i].type], tiles[i].position);
 
             player.Draw(spriteBatch);
+
+            spriteBatch.DrawString(timerFont, timer.ToString(), new Vector2(0, 0), Color.White);
         }
 
         public void LoadLevel()
@@ -204,6 +214,8 @@ namespace Platformer_CS
             tileTextures.Add(Tile.TileType.Question2, content.Load<Texture2D>("question2"));
             tileTextures.Add(Tile.TileType.Pipe, content.Load<Texture2D>("pipe"));
             tileTextures.Add(Tile.TileType.Stair, content.Load<Texture2D>("stair"));
+
+            timerFont = content.Load<SpriteFont>("TimerFont");
         }
 
         public void MoveTiles()

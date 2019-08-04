@@ -13,6 +13,8 @@ namespace Platformer_CS
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        
+
         Level level;
 
         public Game1()
@@ -45,6 +47,8 @@ namespace Platformer_CS
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            
         }
 
         /// <summary>
@@ -81,7 +85,7 @@ namespace Platformer_CS
             if (state.IsKeyUp(Keys.Right) && state.IsKeyUp(Keys.D) && level.player.velocity.X > 0)
                 level.player.Stop();
 
-            level.Update();
+            level.Update(gameTime);
 
             base.Update(gameTime);
         }
