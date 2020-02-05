@@ -6,7 +6,7 @@ namespace Platformer_CS
 {
     public class Tile
     {
-        public Texture2D texture;
+        //public Texture2D texture;
         public TileType type;
 
         public int width;

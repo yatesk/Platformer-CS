@@ -163,7 +163,17 @@ namespace Platformer_CS
 
             player.Draw(spriteBatch);
 
-            spriteBatch.DrawString(timerFont, timer.ToString(), new Vector2(0, 0), Color.White);
+
+            int time = (int)timer;
+
+            if (time % 60 < 10)
+            {
+                spriteBatch.DrawString(timerFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(0, 0), Color.White);
+            }
+            else
+            {
+                spriteBatch.DrawString(timerFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(0, 0), Color.White);
+            }
         }
 
         public void LoadLevel()
