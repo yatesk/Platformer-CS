@@ -7,21 +7,19 @@ namespace Platformer_CS
 {
     public class Game1 : Game
     {
-        int screen_width = 1200;
-        int screen_height = 800;
+        private int screenWidth = 1200;
+        private int screenHeight = 800;
 
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
-        
-
-        Level level;
+        private Level level;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferHeight = screen_height;
-            graphics.PreferredBackBufferWidth = screen_width;
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
             Content.RootDirectory = "Content";
             this.Window.Title = "Platformer CS"; 
         }
@@ -76,7 +74,7 @@ namespace Platformer_CS
                 level.player.Left();
             if (state.IsKeyDown(Keys.Right) || state.IsKeyDown(Keys.D))
                 level.player.Right();
-            if (state.IsKeyDown(Keys.Down) || state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Space))
+            if (state.IsKeyDown(Keys.Down) || state.IsKeyDown(Keys.Up) || state.IsKeyDown(Keys.W) || state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Space))
                 level.player.Jump();
 
 

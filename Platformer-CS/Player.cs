@@ -11,9 +11,7 @@ namespace Platformer_CS
         public Texture2D image;
         public int width;
         public int height;
-
         public bool onPlatform = true;
-
 
         public Player(int x, int y, int width, int height)
         {

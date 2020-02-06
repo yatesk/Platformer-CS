@@ -10,32 +10,35 @@ namespace Platformer_CS
 {
     public class Level
     {
-        public Texture2D background_image;
+        //System.Diagnostics.Debug.WriteLine(timer);
 
-        public Vector2 background_xy1;
-        public Vector2 background_xy2;  // max screen width
+        private Texture2D background_image;
+
+        private Vector2 background_xy1;
+        private Vector2 background_xy2;  // max screen width
 
         // Temporary values so collisions work better.
-        public const int PLAYER_HEIGHT = 62;
-        public const int PLAYER_WIDTH = 31;
+        private int playerHeight = 62;
+        private int playerWidth = 31;
 
-        public Player player = new Player(400, 400, PLAYER_WIDTH, PLAYER_HEIGHT);
+        public Player player;
 
-        public int screen_width = 1200;
-        public int screen_height = 800;
+        private int screen_width = 1200;
+        private int screen_height = 800;
 
-        public float timer = 0f;
+        private float timer = 0f;
 
         public List<Tile> tiles = new List<Tile>();
 
-        public Dictionary<Tile.TileType, Texture2D> tileTextures = new Dictionary<Tile.TileType, Texture2D>();
+        private Dictionary<Tile.TileType, Texture2D> tileTextures = new Dictionary<Tile.TileType, Texture2D>();
 
-        ContentManager content;
-        SpriteFont timerFont;
-
+        private ContentManager content;
+        private SpriteFont timerFont;
 
         public Level(ContentManager Content)
         {
+            player = new Player(400, 400, playerWidth, playerHeight);
+
             background_xy1 = new Vector2(0, 0);
             background_xy2 = new Vector2(screen_width, 0);
 
@@ -132,8 +135,6 @@ namespace Platformer_CS
                 player.position.X += player.velocity.X;
             }
 
-            System.Diagnostics.Debug.WriteLine(timer);
-
             player.position.Y += player.velocity.Y;
 
             // If player dies, restart level.
@@ -164,6 +165,7 @@ namespace Platformer_CS
             player.Draw(spriteBatch);
 
 
+            // Draw timer in minutes:seconds format.
             int time = (int)timer;
 
             if (time % 60 < 10)
